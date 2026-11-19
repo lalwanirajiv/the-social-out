@@ -59,7 +59,7 @@ export default function Hero({ videoUrl }: HeroProps) {
       >
         <div className="min-w-0">
           <h2
-            className="whitespace-nowrap font-heading text-[31px]
+            className="whitespace-nowrap font-heading text-[19px]
               font-bold uppercase leading-[0.9]
               tracking-tight text-white md:text-[79px]"
           >
@@ -67,11 +67,11 @@ export default function Hero({ videoUrl }: HeroProps) {
           </h2>
 
           <p
-            className="font-body text-3xl font-normal
-              text-white/65 md:text-xl"
+            className="mt-3 font-body text-lg font-normal leading-6
+              text-white/65 md:mt-0 md:text-xl md:leading-7"
           >
             NEW CITIES. NEW STAGES.{" "}
-            UNFORGETTABLE STORIES.
+            <span className="block md:inline">UNFORGETTABLE STORIES.</span>
           </p>
         </div>
       </div>

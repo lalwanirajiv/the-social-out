@@ -98,6 +98,27 @@ function isVideo(item: WordPressMedia): boolean {
 }
 
 
+let headerLogoRequest: Promise<string | null> | undefined;
+
+// Header and footer share one request per page load. Refreshing loads CMS updates.
+export function getHeaderLogo(): Promise<string | null> {
+  if (!headerLogoRequest) {
+    headerLogoRequest = fetchSection("header-logo")
+      .then(
+        (items) =>
+          items.find((item) => item.media_type === "image" && item.source_url)
+            ?.source_url ?? null,
+      )
+      .catch((error) => {
+        // Allow a later mount to retry after a failed request.
+        headerLogoRequest = undefined;
+        throw error;
+      });
+  }
+
+  return headerLogoRequest;
+}
+
 export async function getSiteMedia(): Promise<SiteMedia> {
   const [galleryItems, reelItems, heroItems] =
     await Promise.all([

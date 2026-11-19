@@ -1,110 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-
-const CMS_URL =
-  process.env.NEXT_PUBLIC_WORDPRESS_URL ?? "https://cms.thesocialout.in";
-
-const WP_API = `${CMS_URL.replace(/\/$/, "")}/wp-json/wp/v2`;
+import CmsLogo from "@/components/layout/CmsLogo";
 
 const allLinks = [
   { label: "Upcoming Shows", href: "/experiences/" },
   { label: "About Us", href: "/about/" },
-  { label: "Past Events", href: "/collaborate/" },
+  { label: "Past Events", href: "/past-events/" },
   { label: "Stay Social", href: "/stay-social/" },
   { label: "Contact Us", href: "/contact/" },
 ];
-
-type MediaSection = {
-  id: number;
-  slug: string;
-};
-
-type WordPressMedia = {
-  id: number;
-  source_url: string;
-  media_type: string;
-  mime_type: string;
-};
-
-// Fetch the logo assigned to the "header-logo" section.
-async function fetchHeaderLogo(): Promise<string | null> {
-  // First, get the section ID.
-  const sectionResponse = await fetch(
-    `${WP_API}/socialout_media_sections?slug=header-logo`,
-    { cache: "no-store" },
-  );
-
-  if (!sectionResponse.ok) {
-    throw new Error("Failed to fetch Header Logo section");
-  }
-
-  const sections: MediaSection[] = await sectionResponse.json();
-
-  if (sections.length === 0) {
-    return null;
-  }
-
-  const sectionId = sections[0].id;
-
-  // Fetch images assigned to that section.
-  const params = new URLSearchParams({
-    socialout_media_sections: String(sectionId),
-    media_type: "image",
-    per_page: "20",
-    orderby: "date",
-    order: "desc",
-  });
-
-  const mediaResponse = await fetch(`${WP_API}/media?${params.toString()}`, {
-    cache: "no-store",
-  });
-
-  if (!mediaResponse.ok) {
-    throw new Error("Failed to fetch Header Logo media");
-  }
-
-  const media: WordPressMedia[] = await mediaResponse.json();
-
-  const logo = media.find(
-    (item) => item.media_type === "image" && item.source_url,
-  );
-
-  return logo?.source_url ?? null;
-}
 
 export default function Header() {
   const pathname = usePathname();
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [headerLogoUrl, setHeaderLogoUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    let active = true;
-
-    async function loadLogo() {
-      try {
-        const url = await fetchHeaderLogo();
-
-        if (active) {
-          setHeaderLogoUrl(url);
-        }
-      } catch (error) {
-        console.error("Unable to load WordPress header logo:", error);
-      }
-    }
-
-    loadLogo();
-
-    return () => {
-      active = false;
-    };
-  }, []);
   // Detect page scroll.
   useEffect(() => {
     const updateScroll = () => {
@@ -119,31 +33,6 @@ export default function Header() {
 
     return () => {
       window.removeEventListener("scroll", updateScroll);
-    };
-  }, []);
-
-  // Load logo from WordPress on page load.
-  useEffect(() => {
-    let active = true;
-
-    async function loadLogo() {
-      try {
-        const url = await fetchHeaderLogo();
-
-        if (active) {
-          setHeaderLogoUrl(url);
-        }
-      } catch (error) {
-        console.error("Unable to load WordPress header logo:", error);
-
-        // Local fallback logo remains visible.
-      }
-    }
-
-    loadLogo();
-
-    return () => {
-      active = false;
     };
   }, []);
 
@@ -201,17 +90,12 @@ export default function Header() {
               items-center justify-center"
             onClick={() => setMenuOpen(false)}
           >
-            {headerLogoUrl && (
-              <Image
-                src={headerLogoUrl}
-                alt="The Social Out"
-                width={208}
-                height={70}
-                priority
-                unoptimized
-                className="h-auto max-h-12 w-40 object-contain md:w-48 lg:w-52"
-              />
-            )}
+            <CmsLogo
+              width={208}
+              height={70}
+              preload
+              className="h-auto max-h-12 w-40 object-contain md:w-48 lg:w-52"
+            />
           </Link>
 
           {/* Desktop navigation */}
