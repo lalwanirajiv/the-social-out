@@ -267,8 +267,9 @@ export default function ExperienceShowcase({
               lg:auto-rows-[105px] lg:gap-3"
             aria-label="The Social Out photo gallery"
           >
-            {photos.indexes.map((imageIndex, slot) => {
-              const src = images[imageIndex];
+            {Array.from({ length: PHOTO_SLOTS }, (_, slot) => {
+              const imageIndex = photos.indexes[slot];
+              const src = imageIndex === undefined ? undefined : images[imageIndex];
 
               return (
                 <div
@@ -278,7 +279,7 @@ export default function ExperienceShowcase({
                     overflow-hidden bg-[#141414]
                     ${photoShapes[slot] ?? ""}`}
                 >
-                  <AnimatePresence initial={false}>
+                  {src && <AnimatePresence initial={false}>
                     <motion.div
                       key={src}
                       className="absolute inset-0"
@@ -314,7 +315,7 @@ export default function ExperienceShowcase({
                         className="object-cover"
                       />
                     </motion.div>
-                  </AnimatePresence>
+                  </AnimatePresence>}
                 </div>
               );
             })}
@@ -358,8 +359,9 @@ export default function ExperienceShowcase({
                 md:grid-cols-3 md:gap-5"
               aria-label="The Social Out experience reels"
             >
-              {videos.indexes.map((videoIndex, slot) => {
-                const src = reels[videoIndex];
+              {Array.from({ length: REEL_SLOTS }, (_, slot) => {
+                const videoIndex = videos.indexes[slot];
+                const src = videoIndex === undefined ? undefined : reels[videoIndex];
 
                 const reelSizes = [
                   "aspect-[3/5]",
@@ -375,7 +377,7 @@ export default function ExperienceShowcase({
                       bg-[#141414]
                       ${reelSizes[slot]}`}
                   >
-                    <AnimatePresence initial={false}>
+                    {src && <AnimatePresence initial={false}>
                       <motion.div
                         key={src}
                         className="absolute inset-0"
@@ -404,7 +406,7 @@ export default function ExperienceShowcase({
                           className="h-full w-full object-cover"
                         />
                       </motion.div>
-                    </AnimatePresence>
+                    </AnimatePresence>}
                   </div>
                 );
               })}
