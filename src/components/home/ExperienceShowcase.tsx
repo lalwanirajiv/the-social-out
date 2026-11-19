@@ -1,15 +1,11 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-} from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
+import ReelPlayer from "@/components/home/ReelPlayer";
 
 type ExperienceShowcaseProps = {
   images: string[];
@@ -25,10 +21,7 @@ function randomInt(max: number): number {
 }
 
 function initialSelection(total: number, slots: number) {
-  return Array.from(
-    { length: Math.min(total, slots) },
-    (_, index) => index
-  );
+  return Array.from({ length: Math.min(total, slots) }, (_, index) => index);
 }
 
 /**
@@ -39,24 +32,18 @@ function initialSelection(total: number, slots: number) {
  * - Prefers unseen media.
  * - If all media is already visible, swaps two tiles.
  */
-function shuffleRandomTiles(
-  current: number[],
-  total: number
-): number[] {
+function shuffleRandomTiles(current: number[], total: number): number[] {
   if (total < 2 || current.length < 2) {
     return current;
   }
 
   const next = [...current];
 
-  const availableSlots = current.map(
-    (_, index) => index
-  );
+  const availableSlots = current.map((_, index) => index);
 
-  const unusedMedia = Array.from(
-    { length: total },
-    (_, index) => index
-  ).filter((index) => !current.includes(index));
+  const unusedMedia = Array.from({ length: total }, (_, index) => index).filter(
+    (index) => !current.includes(index),
+  );
 
   // Randomly choose one or two slots,
   // but always keep at least one other tile still.
@@ -64,28 +51,18 @@ function shuffleRandomTiles(
   const maxChanges = Math.min(
     requestedChanges,
     current.length - 1,
-    unusedMedia.length
+    unusedMedia.length,
   );
 
   if (maxChanges > 0) {
     for (let i = 0; i < maxChanges; i++) {
-      const slotPosition = randomInt(
-        availableSlots.length
-      );
+      const slotPosition = randomInt(availableSlots.length);
 
-      const slot = availableSlots.splice(
-        slotPosition,
-        1
-      )[0];
+      const slot = availableSlots.splice(slotPosition, 1)[0];
 
-      const mediaPosition = randomInt(
-        unusedMedia.length
-      );
+      const mediaPosition = randomInt(unusedMedia.length);
 
-      const replacement = unusedMedia.splice(
-        mediaPosition,
-        1
-      )[0];
+      const replacement = unusedMedia.splice(mediaPosition, 1)[0];
 
       next[slot] = replacement;
     }
@@ -104,10 +81,7 @@ function shuffleRandomTiles(
     second += 1;
   }
 
-  [next[first], next[second]] = [
-    next[second],
-    next[first],
-  ];
+  [next[first], next[second]] = [next[second], next[first]];
 
   return next;
 }
@@ -115,14 +89,11 @@ function shuffleRandomTiles(
 /**
  * Each collection has its own independent timer.
  */
-function useIndependentShuffle(
-  total: number,
-  slots: number
-) {
+function useIndependentShuffle(total: number, slots: number) {
   const reducedMotion = useReducedMotion();
 
-  const [indexes, setIndexes] = useState<number[]>(
-    () => initialSelection(total, slots)
+  const [indexes, setIndexes] = useState<number[]>(() =>
+    initialSelection(total, slots),
   );
 
   useEffect(() => {
@@ -137,9 +108,7 @@ function useIndependentShuffle(
     const timer = window.setInterval(() => {
       if (document.hidden) return;
 
-      setIndexes((current) =>
-        shuffleRandomTiles(current, total)
-      );
+      setIndexes((current) => shuffleRandomTiles(current, total));
     }, SHUFFLE_INTERVAL);
 
     return () => {
@@ -172,15 +141,9 @@ export default function ExperienceShowcase({
   images,
   reels,
 }: ExperienceShowcaseProps) {
-  const photos = useIndependentShuffle(
-    images.length,
-    PHOTO_SLOTS
-  );
+  const photos = useIndependentShuffle(images.length, PHOTO_SLOTS);
 
-  const videos = useIndependentShuffle(
-    reels.length,
-    REEL_SLOTS
-  );
+  const videos = useIndependentShuffle(reels.length, REEL_SLOTS);
 
   return (
     <>
@@ -213,12 +176,8 @@ export default function ExperienceShowcase({
                 sm:text-6xl xl:text-7xl"
             >
               Beyond
-              <span className="block">
-                The
-              </span>
-              <span className="block text-[#9E1010]">
-                Ordinary.
-              </span>
+              <span className="block">The</span>
+              <span className="block text-[#9E1010]">Ordinary.</span>
             </h2>
 
             <p
@@ -226,8 +185,7 @@ export default function ExperienceShowcase({
                 font-body text-base leading-8
                 text-white/65"
             >
-              Great experiences shouldn&apos;t be
-              limited to the same cities and
+              Great experiences shouldn&apos;t be limited to the same cities and
               the same audiences.
             </p>
 
@@ -236,12 +194,10 @@ export default function ExperienceShowcase({
                 font-body text-base leading-8
                 text-white/65"
             >
-              Based in Ahmedabad, The Social Out
-              brings artists, entertainment,
-              and fresh energy to places where
-              they haven&apos;t performed before.
-              Our goal is to create meaningful,
-              unforgettable first-time moments.
+              Based in Ahmedabad, The Social Out brings artists, entertainment,
+              and fresh energy to places where they haven&apos;t performed
+              before. Our goal is to create meaningful, unforgettable first-time
+              moments.
             </p>
 
             <Link
@@ -269,7 +225,8 @@ export default function ExperienceShowcase({
           >
             {Array.from({ length: PHOTO_SLOTS }, (_, slot) => {
               const imageIndex = photos.indexes[slot];
-              const src = imageIndex === undefined ? undefined : images[imageIndex];
+              const src =
+                imageIndex === undefined ? undefined : images[imageIndex];
 
               return (
                 <div
@@ -279,43 +236,43 @@ export default function ExperienceShowcase({
                     overflow-hidden bg-[#141414]
                     ${photoShapes[slot] ?? ""}`}
                 >
-                  {src && <AnimatePresence initial={false}>
-                    <motion.div
-                      key={src}
-                      className="absolute inset-0"
-                      initial={
-                        photos.reducedMotion
-                          ? false
-                          : {
-                              opacity: 0,
-                              scale: 1.035,
-                            }
-                      }
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                      }}
-                      exit={{
-                        opacity: 0,
-                        scale: 1.015,
-                      }}
-                      transition={{
-                        duration: 0.9,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <Image
-                        src={src}
-                        alt={`The Social Out event moment ${
-                          slot + 1
-                        }`}
-                        fill
-                        unoptimized
-                        sizes="(min-width: 1024px) 45vw, 50vw"
-                        className="object-cover"
-                      />
-                    </motion.div>
-                  </AnimatePresence>}
+                  {src && (
+                    <AnimatePresence initial={false}>
+                      <motion.div
+                        key={src}
+                        className="absolute inset-0"
+                        initial={
+                          photos.reducedMotion
+                            ? false
+                            : {
+                                opacity: 0,
+                                scale: 1.035,
+                              }
+                        }
+                        animate={{
+                          opacity: 1,
+                          scale: 1,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          scale: 1.015,
+                        }}
+                        transition={{
+                          duration: 0.9,
+                          ease: "easeInOut",
+                        }}
+                      >
+                        <Image
+                          src={src}
+                          alt={`The Social Out event moment ${slot + 1}`}
+                          fill
+                          unoptimized
+                          sizes="(min-width: 1024px) 45vw, 50vw"
+                          className="object-cover"
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+                  )}
                 </div>
               );
             })}
@@ -329,14 +286,14 @@ export default function ExperienceShowcase({
       {reels.length > 0 && (
         <section
           id="reels"
-          className="bg-black px-5 py-24
-            text-white md:px-10 lg:px-12 lg:py-32"
+          className="bg-[#9E1010] px-5 py-24
+    text-white md:px-10 lg:px-12 lg:py-32"
         >
           <div className="mx-auto max-w-[1500px]">
             <p
               className="mb-5 font-body text-xs
                 font-semibold uppercase
-                tracking-[0.3em] text-[#9E1010]"
+                tracking-[0.3em] text-white"
             >
               The Social Out / Experiences
             </p>
@@ -348,9 +305,7 @@ export default function ExperienceShowcase({
                 lg:text-7xl"
             >
               Moments In
-              <span className="text-[#9E1010]">
-                {" "}Motion.
-              </span>
+              <span className="text-black"> Motion.</span>
             </h2>
 
             <div
@@ -361,7 +316,8 @@ export default function ExperienceShowcase({
             >
               {Array.from({ length: REEL_SLOTS }, (_, slot) => {
                 const videoIndex = videos.indexes[slot];
-                const src = videoIndex === undefined ? undefined : reels[videoIndex];
+                const src =
+                  videoIndex === undefined ? undefined : reels[videoIndex];
 
                 const reelSizes = [
                   "aspect-[3/5]",
@@ -377,36 +333,28 @@ export default function ExperienceShowcase({
                       bg-[#141414]
                       ${reelSizes[slot]}`}
                   >
-                    {src && <AnimatePresence initial={false}>
-                      <motion.div
-                        key={src}
-                        className="absolute inset-0"
-                        initial={
-                          videos.reducedMotion
-                            ? false
-                            : { opacity: 0 }
-                        }
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                          duration: 0.8,
-                          ease: "easeInOut",
-                        }}
-                      >
-                        <video
-                          src={src}
-                          autoPlay={!videos.reducedMotion}
-                          muted
-                          loop
-                          playsInline
-                          preload="metadata"
-                          aria-label={`Experience reel ${
-                            slot + 1
-                          }`}
-                          className="h-full w-full object-cover"
-                        />
-                      </motion.div>
-                    </AnimatePresence>}
+                    {src && (
+                      <AnimatePresence initial={false}>
+                        <motion.div
+                          key={src}
+                          className="absolute inset-0"
+                          initial={
+                            videos.reducedMotion ? false : { opacity: 0 }
+                          }
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{
+                            duration: 0.8,
+                            ease: "easeInOut",
+                          }}
+                        >
+                          <ReelPlayer
+                            src={src}
+                            label={`Experience reel ${slot + 1}`}
+                          />
+                        </motion.div>
+                      </AnimatePresence>
+                    )}
                   </div>
                 );
               })}

@@ -1,13 +1,13 @@
 
-import Image from "next/image";
 import Link from "next/link";
+import CmsLogo from "@/components/layout/CmsLogo";
 
 const links = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about/" },
-  { label: "Experiences", href: "/experiences/" },
-  { label: "Collaborate", href: "/collaborate/" },
-  { label: "Contact", href: "/contact/" },
+  { label: "About Us", href: "/about/" },
+  { label: "Upcoming Shows", href: "/experiences/" },
+  { label: "Past Events", href: "/past-events/" },
+  { label: "Stay Social", href: "/stay-social/" },
+  { label: "Contact Us", href: "/contact/" },
 ];
 
 export default function Footer() {
@@ -15,12 +15,10 @@ export default function Footer() {
     <footer className="border-t border-white/10 bg-black px-6 pb-8 pt-20 text-white md:px-12">
       <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-3">
         <div>
-          <Image
-            src="/branding/logo-white.png"
-            alt="The Social Out"
+          <CmsLogo
             width={200}
             height={80}
-            className="h-auto w-44 object-contain"
+            className="h-auto max-h-12 w-44 object-contain"
           />
 
           <p className="mt-8 max-w-sm font-body text-sm leading-7 text-white/50">

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Hero from "@/components/home/Hero";
 import ExperienceShowcase from "@/components/home/ExperienceShowcase";
 import { getSiteMedia, type SiteMedia } from "@/lib/wordpress";
+import ContactUs from "@/components/home/ContactUs";
 
 const emptyMedia: SiteMedia = {
   gallery: [],
@@ -50,7 +51,7 @@ export default function HomeContent() {
       <Hero videoUrl={media.heroVideo} />
 
       <ExperienceShowcase images={media.gallery} reels={media.reels} />
-
+      <ContactUs />
       {error && (
         <p
           role="alert"
