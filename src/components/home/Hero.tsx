@@ -1,6 +1,10 @@
 
 const heroHeadline = "Live Love Dance";
 
+type HeroProps = {
+  videoUrl: string | null;
+};
+
 function highlightEs(text: string) {
   return text.split(/(e)/i).map((part, index) =>
     part.toLowerCase() === "e" ? (
@@ -13,24 +17,34 @@ function highlightEs(text: string) {
   );
 }
 
-export default function Hero() {
+export default function Hero({ videoUrl }: HeroProps) {
   return (
     <section
       className="relative flex min-h-screen items-end
         overflow-hidden bg-black"
     >
-      {/* Background video */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover"
-      >
-        <source src="/videos/hero.mp4" type="video/mp4" />
-      </video>
+      {/* Background video from WordPress CMS */}
+      {videoUrl && (
+        <video
+          key={videoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source
+            src={videoUrl}
+            type={
+              videoUrl.split("?")[0].toLowerCase().endsWith(".webm")
+                ? "video/webm"
+                : "video/mp4"
+            }
+          />
+        </video>
+      )}
 
       {/* Cinematic gradient overlay */}
       <div
@@ -43,16 +57,21 @@ export default function Hero() {
         className="relative z-10 mx-auto w-full max-w-[1500px]
           px-6 pb-16 pt-40 text-center md:px-12 md:pb-24"
       >
-
         <div className="min-w-0">
           <h2
             className="whitespace-nowrap font-heading text-[31px]
-              font-bold uppercase leading-[0.9] tracking-tight text-white md:text-[79px]"
+              font-bold uppercase leading-[0.9]
+              tracking-tight text-white md:text-[79px]"
           >
             {highlightEs(heroHeadline)}
           </h2>
-          <p className="font-body text-3xl font-normal text-white/65 md:text-xl">
-            NEW CITIES. NEW STAGES.{" "} UNFORGETTABLE STORIES.
+
+          <p
+            className="font-body text-3xl font-normal
+              text-white/65 md:text-xl"
+          >
+            NEW CITIES. NEW STAGES.{" "}
+            UNFORGETTABLE STORIES.
           </p>
         </div>
       </div>

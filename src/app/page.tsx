@@ -1,19 +1,10 @@
 
-import Hero from "@/components/home/Hero";
-import ExperienceShowcase from "@/components/home/ExperienceShowcase";
-import { getExperienceMedia } from "@/lib/media";
+import HomeContent from "@/components/home/HomeContent";
 
-export default async function Home() {
-  const { images, reels } = await getExperienceMedia();
-
+export default function Home() {
   return (
     <main>
-      <Hero />
-
-      <ExperienceShowcase
-        images={images}
-        reels={reels}
-      />
+      <HomeContent />
     </main>
   );
 }
