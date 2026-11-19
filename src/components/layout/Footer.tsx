@@ -3,7 +3,7 @@ import Link from "next/link";
 import CmsLogo from "@/components/layout/CmsLogo";
 
 const links = [
-  { label: "About Us", href: "/about/" },
+  { label: "Our Team", href: "/our-team/" },
   { label: "Upcoming Shows", href: "/experiences/" },
   { label: "Past Events", href: "/past-events/" },
   { label: "Stay Social", href: "/stay-social/" },
