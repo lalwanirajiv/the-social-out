@@ -171,19 +171,63 @@ function TeamPortrait({ src, name }: { src: string | null; name: string }) {
         />
       </div>
 
-      {/* Nameplate */}
-      <div
-        className="relative mx-auto -mt-7
-          w-[85%] bg-[#9E1010]
-          px-5 py-4 text-center shadow-xl"
-      >
-        <h3
-          className="font-heading text-xl
-            font-bold uppercase tracking-tight
-            text-white md:text-2xl"
+      {/* Artist Nameplate - Exact SVG Design */}
+      <div className="relative z-20 mx-auto -mt-10 w-[90%] max-w-md">
+        <svg
+          viewBox="0 0 340 100"
+          width="100%"
+          xmlns="http://www.w3.org/2000/svg"
+          className="overflow-visible drop-shadow-[0_12px_18px_rgba(0,0,0,0.3)]"
+          role="img"
+          aria-label={name}
         >
-          {name}
-        </h3>
+          {/* Offset red outline */}
+          <path
+            d="M24 17 L326 17 L326 67 L307 85 L9 85 L9 32 Z"
+            fill="none"
+            stroke="#9E1010"
+            strokeWidth="1.5"
+          />
+
+          {/* Main red angular shape */}
+          <path d="M29 9 H331 V61 L302 91 H9 V29 Z" fill="#9E1010" />
+
+          {/* Left white decorative line */}
+          <path
+            d="M20 29 V80"
+            stroke="#FFFFFF"
+            strokeOpacity="0.45"
+            strokeWidth="1"
+          />
+
+          {/* Bottom-right white folded paper */}
+          <path d="M302 61 L302 91 L331 61 Z" fill="#FFFFFF" />
+
+          {/* Subtle fold shadow */}
+          <path
+            d="M302 61 L302 91 L331 61"
+            fill="none"
+            stroke="#D1D1D1"
+            strokeWidth="1"
+          />
+
+          {/* Artist name */}
+          <text
+            x="170"
+            y="57"
+            textAnchor="middle"
+            dominantBaseline="auto"
+            fontFamily="Arial, sans-serif"
+            fontSize="26"
+            fontWeight="900"
+            letterSpacing="1.4"
+            fill="#FFFFFF"
+            textLength={name.length > 16 ? 265 : undefined}
+            lengthAdjust="spacingAndGlyphs"
+          >
+            {name.toUpperCase()}
+          </text>
+        </svg>
       </div>
     </div>
   );
@@ -306,8 +350,9 @@ function FounderProfile({
                 xl:text-6xl"
             >
               {name.split(" ")[0]}
+              &nbsp;
               <span
-                className="block mt-2
+                className="mt-2
                   text-[#9E1010]"
               >
                 {name.split(" ").slice(1).join(" ")}
@@ -430,7 +475,8 @@ export default function OurTeam() {
               font-body text-base leading-8
               text-white/60 md:text-lg"
           >
-            The minds behind the <span className="text-[#9E1010]">experiences.</span>
+            The minds behind the{" "}
+            <span className="text-[#9E1010]">experiences.</span>
           </p>
         </Reveal>
       </section>
