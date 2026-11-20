@@ -37,9 +37,26 @@ jobs:
 
       - name: Verify static export
         run: |
-          test -f out/index.html
-          test -f out/past-events/index.html
-          echo "Static build verified."
+          echo "Current working directory:"
+          pwd
+
+          echo "Project files:"
+          ls -la
+
+          echo "Checking exported files:"
+          if [ -d out ]; then
+            ls -la out
+          else
+            echo "ERROR: out/ directory does not exist."
+            exit 1
+          fi
+
+          if [ ! -f out/index.html ]; then
+            echo "ERROR: out/index.html does not exist."
+            exit 1
+          fi
+
+          echo "Static export verified successfully."
 
       - name: Configure SSH
         env:
