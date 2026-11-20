@@ -186,11 +186,11 @@ export default function ExperienceShowcase({
               The Social Out / Our Story
             </p>
 
-            <h2 className="font-heading text-5xl font-bold uppercase leading-[0.98] tracking-tight sm:text-6xl xl:text-7xl">
+            {/* <h2 className="font-heading text-5xl font-bold uppercase leading-[0.98] tracking-tight sm:text-6xl xl:text-7xl">
               Beyond
               <span className="block">The</span>
               <span className="block text-[#9E1010]">Ordinary.</span>
-            </h2>
+            </h2> */}
 
             <p className="mt-8 max-w-lg font-body text-base leading-8 text-white/65">
               Great experiences shouldn&apos;t be limited to the same cities and
@@ -198,19 +198,26 @@ export default function ExperienceShowcase({
             </p>
 
             <p className="mt-4 max-w-lg font-body text-base leading-8 text-white/65">
-              Based in Ahmedabad, The Social Out brings artists, entertainment,
-              and fresh energy to places where they haven&apos;t performed
-              before. Our goal is to create meaningful, unforgettable first-time
-              moments.
+              Social Out is an artist management and entertainment company
+              dedicated to bringing fresh music, emerging talent, and
+              unforgettable nightlife experiences to new cities. We connect
+              audiences with emerging, independent, and international DJs and
+              artists, creating unique events that celebrate music, energy, and
+              connection. From artist management and bookings to collaborations
+              and live entertainment, our mission is to redefine nightlife
+              through fresh sounds, exciting performances, and memorable
+              experiences. We don’t just bring artists to your city. We bring
+              new sounds, new energy, and new reasons to go out. This is Social
+              Out. And we’re just getting started.
             </p>
 
-            <Link
+            {/* <Link
               href="/about/"
               className="mt-10 inline-flex items-center gap-3 border-b border-[#9E1010] pb-3 font-heading text-sm font-semibold uppercase tracking-widest transition-colors hover:text-[#9E1010]"
             >
               Discover Our Story
               <ArrowUpRight size={18} />
-            </Link>
+            </Link> */}
           </div>
 
           <div
