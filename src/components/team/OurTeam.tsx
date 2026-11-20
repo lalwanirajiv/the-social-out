@@ -9,6 +9,10 @@ const CMS = (
   process.env.NEXT_PUBLIC_WORDPRESS_URL ?? "https://cms.thesocialout.in"
 ).replace(/\/$/, "");
 
+// ==========================================
+// TYPES
+// ==========================================
+
 type WordPressTerm = {
   id: number;
 };
@@ -32,10 +36,11 @@ type WordPressMedia = {
 type TeamImages = {
   jatin: string | null;
   heany: string | null;
+  ritu: string | null;
 };
 
 // ==========================================
-// WORDPRESS MEDIA SECTION IMAGE FETCHING
+// WORDPRESS MEDIA IMAGE FETCHING
 // ==========================================
 
 async function fetchSectionImage(
@@ -55,7 +60,10 @@ async function fetchSectionImage(
 
   const terms: WordPressTerm[] = await termResponse.json();
 
-  if (!terms.length) return null;
+  if (!terms.length) {
+    console.warn(`Media section not found: ${slug}`);
+    return null;
+  }
 
   const mediaResponse = await fetch(
     `${CMS}/wp-json/wp/v2/media?socialout_media_sections=${terms[0].id}&per_page=20`,
@@ -70,9 +78,13 @@ async function fetchSectionImage(
 
   const image = media.find((item) => item.mime_type?.startsWith("image/"));
 
-  return (
-    image?.media_details?.sizes?.large?.source_url ?? image?.source_url ?? null
-  );
+  if (!image) {
+    console.warn(`No image found in section: ${slug}`);
+    return null;
+  }
+
+  // Prefer original WordPress file URL.
+  return image.source_url;
 }
 
 // ==========================================
@@ -127,6 +139,7 @@ function Reveal({
 function TeamPortrait({ src, name }: { src: string | null; name: string }) {
   return (
     <div className="relative w-full">
+      {/* PORTRAIT IMAGE */}
       <div
         className="relative h-[360px] w-full
           overflow-hidden bg-[#171717]
@@ -161,7 +174,7 @@ function TeamPortrait({ src, name }: { src: string | null; name: string }) {
           </div>
         )}
 
-        {/* Subtle image gradient */}
+        {/* IMAGE GRADIENT */}
         <div
           className="pointer-events-none
             absolute inset-0
@@ -171,7 +184,7 @@ function TeamPortrait({ src, name }: { src: string | null; name: string }) {
         />
       </div>
 
-      {/* Artist Nameplate - Exact SVG Design */}
+      {/* CUSTOM RED ANGULAR NAMEPLATE */}
       <div className="relative z-20 mx-auto -mt-10 w-[90%] max-w-md">
         <svg
           viewBox="0 0 340 100"
@@ -181,7 +194,7 @@ function TeamPortrait({ src, name }: { src: string | null; name: string }) {
           role="img"
           aria-label={name}
         >
-          {/* Offset red outline */}
+          {/* OFFSET RED OUTLINE */}
           <path
             d="M24 17 L326 17 L326 67 L307 85 L9 85 L9 32 Z"
             fill="none"
@@ -189,10 +202,10 @@ function TeamPortrait({ src, name }: { src: string | null; name: string }) {
             strokeWidth="1.5"
           />
 
-          {/* Main red angular shape */}
+          {/* MAIN RED ANGULAR SHAPE */}
           <path d="M29 9 H331 V61 L302 91 H9 V29 Z" fill="#9E1010" />
 
-          {/* Left white decorative line */}
+          {/* WHITE DECORATIVE LINE */}
           <path
             d="M20 29 V80"
             stroke="#FFFFFF"
@@ -200,10 +213,9 @@ function TeamPortrait({ src, name }: { src: string | null; name: string }) {
             strokeWidth="1"
           />
 
-          {/* Bottom-right white folded paper */}
+          {/* FOLDED CORNER */}
           <path d="M302 61 L302 91 L331 61 Z" fill="#FFFFFF" />
 
-          {/* Subtle fold shadow */}
           <path
             d="M302 61 L302 91 L331 61"
             fill="none"
@@ -211,12 +223,11 @@ function TeamPortrait({ src, name }: { src: string | null; name: string }) {
             strokeWidth="1"
           />
 
-          {/* Artist name */}
+          {/* MEMBER NAME */}
           <text
             x="170"
             y="57"
             textAnchor="middle"
-            dominantBaseline="auto"
             fontFamily="Arial, sans-serif"
             fontSize="26"
             fontWeight="900"
@@ -234,7 +245,7 @@ function TeamPortrait({ src, name }: { src: string | null; name: string }) {
 }
 
 // ==========================================
-// JATIN JAWRANI — COMPLETE CONTENT
+// JATIN JAWRANI — ORIGINAL CONTENT
 // ==========================================
 
 const jatinStory = [
@@ -254,7 +265,7 @@ const jatinStory = [
 ];
 
 // ==========================================
-// HEANY PAMNANI — COMPLETE CONTENT
+// HEANY PAMNANI — ORIGINAL CONTENT
 // ==========================================
 
 const heanyStory = [
@@ -270,28 +281,46 @@ const heanyStory = [
 ];
 
 // ==========================================
-// REUSABLE FOUNDER PROFILE
+// RITU BHAGWANI — NEW TEAM MEMBER
 // ==========================================
 
-type FounderProfileProps = {
+const rituStory = [
+  `Ritu Bhagwani is an entrepreneur and an experienced professional with over 7 years of experience in the entertainment and creative industries. She is the Founder and Owner of Grinning Mars Productions and Chal Man Vrindavan, bringing her entrepreneurial vision, industry knowledge, and experience to the world of entertainment, production, and large-scale experiences.`,
+
+  `At Social Out, Ritu plays an important role as a Strategic Advisor and Business Mentor, guiding the organisation through important decisions, business challenges, and opportunities for growth. Her experience and understanding of the industry make her a trusted source of guidance for the team, helping shape ideas, strengthen business strategies, and keep the organisation moving in the right direction.`,
+
+  `With her knowledge of business management, operations, legal matters, and the entertainment industry, she brings valuable perspective and practical solutions to every situation. She is someone the team can turn to for clarity, support, and guidance whenever it matters most.`,
+
+  `Beyond her professional experience, Ritu is a constant support system and a guiding force behind the organisation. Her ability to understand situations, offer thoughtful advice, and stand by the team through every challenge makes her an integral part of the journey.`,
+
+  `She believes that building something meaningful takes more than ambition. It takes trust, responsibility, strong relationships, and the right people standing together through every stage of growth.`,
+];
+
+// ==========================================
+// REUSABLE TEAM PROFILE
+// ==========================================
+
+type TeamProfileProps = {
   label: string;
   name: string;
   image: string | null;
   paragraphs: string[];
-  closingStatement: string;
-  index: string;
+  closingStatement?: string;
   reverse?: boolean;
 };
 
-function FounderProfile({
+function TeamProfile({
   label,
   name,
   image,
   paragraphs,
   closingStatement,
-  index,
   reverse = false,
-}: FounderProfileProps) {
+}: TeamProfileProps) {
+  const nameParts = name.split(" ");
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(" ");
+
   return (
     <section
       className="px-5 py-20
@@ -299,39 +328,33 @@ function FounderProfile({
     >
       <div
         className={`mx-auto grid max-w-[1500px]
-    items-start gap-12 lg:gap-20
-    ${reverse ? "lg:grid-cols-[1.2fr_0.8fr]" : "lg:grid-cols-[0.8fr_1.2fr]"}`}
+          items-start gap-12 lg:gap-20
+          ${
+            reverse
+              ? "lg:grid-cols-[1.2fr_0.8fr]"
+              : "lg:grid-cols-[0.8fr_1.2fr]"
+          }`}
       >
         {/* STICKY PORTRAIT */}
         <div
           className={`relative min-w-0 self-start
-    lg:sticky lg:top-32
-    ${reverse ? "lg:order-2" : "lg:order-1"}`}
+            lg:sticky lg:top-32
+            ${reverse ? "lg:order-2" : "lg:order-1"}`}
         >
           <Reveal>
             <TeamPortrait src={image} name={name} />
           </Reveal>
         </div>
 
-        {/* COMPLETE BIOGRAPHY */}
+        {/* BIOGRAPHY */}
         <div className={`min-w-0 ${reverse ? "lg:order-1" : "lg:order-2"}`}>
           <Reveal>
+            {/* ROLE LABEL */}
             <div
-              className="mb-5 flex items-center
-                gap-4"
+              className="mb-5 flex
+                items-center gap-4"
             >
-              <span
-                className="font-body text-xs
-                  font-semibold tracking-widest
-                  text-[#E04545]"
-              >
-                {index}
-              </span>
-
-              <div
-                className="h-px w-10
-                  bg-[#9E1010]"
-              />
+              <div className="h-px w-10 bg-[#9E1010]" />
 
               <span
                 className="font-body text-xs
@@ -343,32 +366,26 @@ function FounderProfile({
               </span>
             </div>
 
+            {/* MEMBER NAME */}
             <h2
               className="font-heading text-4xl
                 font-bold uppercase leading-[1]
                 tracking-tight sm:text-5xl
                 xl:text-6xl"
             >
-              {name.split(" ")[0]}
-              &nbsp;
-              <span
-                className="mt-2
-                  text-[#9E1010]"
-              >
-                {name.split(" ").slice(1).join(" ")}
-              </span>
+              {firstName} <span className="text-[#9E1010]">{lastName}</span>
             </h2>
 
             <div
-              className="my-9 h-[2px] w-16
-                bg-[#9E1010]"
+              className="my-9 h-[2px]
+                w-16 bg-[#9E1010]"
             />
           </Reveal>
 
-          {/* COMPLETE STORY */}
+          {/* FULL BIOGRAPHY */}
           <div className="space-y-7">
-            {paragraphs.map((paragraph, i) => (
-              <Reveal key={i}>
+            {paragraphs.map((paragraph, index) => (
+              <Reveal key={`${name}-${index}`}>
                 <p
                   className="font-body text-base
                     leading-8 text-white/70
@@ -380,24 +397,43 @@ function FounderProfile({
             ))}
           </div>
 
-          {/* SIGNATURE CLOSING */}
-          <Reveal>
-            <blockquote
-              className="mt-12 border-l-[3px]
-                border-[#9E1010] pl-6"
-            >
-              <p
-                className="font-heading text-xl
-                  font-semibold leading-relaxed
-                  text-white md:text-2xl"
+          {/* OPTIONAL SIGNATURE CLOSING */}
+          {closingStatement && (
+            <Reveal>
+              <blockquote
+                className="mt-12
+                  border-l-[3px]
+                  border-[#9E1010] pl-6"
               >
-                {closingStatement}
-              </p>
-            </blockquote>
-          </Reveal>
+                <p
+                  className="font-heading
+                    text-xl font-semibold
+                    leading-relaxed text-white
+                    md:text-2xl"
+                >
+                  {closingStatement}
+                </p>
+              </blockquote>
+            </Reveal>
+          )}
         </div>
       </div>
     </section>
+  );
+}
+
+// ==========================================
+// PROFILE DIVIDER
+// ==========================================
+
+function ProfileDivider() {
+  return (
+    <div
+      className="mx-auto max-w-[1500px]
+        px-5 md:px-10 lg:px-12"
+    >
+      <div className="h-px w-full bg-white/15" />
+    </div>
   );
 }
 
@@ -409,9 +445,10 @@ export default function OurTeam() {
   const [images, setImages] = useState<TeamImages>({
     jatin: null,
     heany: null,
+    ritu: null,
   });
 
-  // Fetch WordPress images.
+  // Load all three portraits from WordPress.
   useEffect(() => {
     const controller = new AbortController();
 
@@ -419,6 +456,7 @@ export default function OurTeam() {
       const results = await Promise.allSettled([
         fetchSectionImage("founder-1", controller.signal),
         fetchSectionImage("founder-2", controller.signal),
+        fetchSectionImage("team-ritu", controller.signal),
       ]);
 
       if (controller.signal.aborted) return;
@@ -427,6 +465,8 @@ export default function OurTeam() {
         jatin: results[0].status === "fulfilled" ? results[0].value : null,
 
         heany: results[1].status === "fulfilled" ? results[1].value : null,
+
+        ritu: results[2].status === "fulfilled" ? results[2].value : null,
       });
     }
 
@@ -436,10 +476,7 @@ export default function OurTeam() {
   }, []);
 
   return (
-    <main
-      className="min-h-screen bg-black
-        text-white"
-    >
+    <main className="min-h-screen bg-black text-white">
       {/* =====================================
           PAGE INTRODUCTION
       ===================================== */}
@@ -483,42 +520,43 @@ export default function OurTeam() {
 
       {/* =====================================
           01 — JATIN JAWRANI
+          PORTRAIT LEFT
       ===================================== */}
-      <FounderProfile
-        index="01"
+      <TeamProfile
         label="Meet The Founder"
         name="Jatin Jawrani"
         image={images.jatin}
         paragraphs={jatinStory}
-        closingStatement={
-          "Always discovering. Always creating. Always building something bigger."
-        }
+        closingStatement="Always discovering. Always creating. Always building something bigger."
       />
 
-      {/* PROFILE DIVIDER */}
-      <div
-        className="mx-auto max-w-[1500px]
-          px-5 md:px-10 lg:px-12"
-      >
-        <div
-          className="h-px w-full
-            bg-white/15"
-        />
-      </div>
+      <ProfileDivider />
 
       {/* =====================================
           02 — HEANY PAMNANI
+          PORTRAIT RIGHT
       ===================================== */}
-      <FounderProfile
-        index="02"
+      <TeamProfile
         label="Meet The Co-Founder"
         name="Heany Pamnani"
         image={images.heany}
         paragraphs={heanyStory}
-        closingStatement={
-          "Creative in her thinking. Strong in her execution. Essential to everything we build."
-        }
+        closingStatement="Creative in her thinking. Strong in her execution. Essential to everything we build."
         reverse
+      />
+
+      <ProfileDivider />
+
+      {/* =====================================
+          03 — RITU BHAGWANI
+          PORTRAIT LEFT
+      ===================================== */}
+
+      <TeamProfile
+        label="Strategic Advisor & Business Mentor"
+        name="Ritu Bhagwani"
+        image={images.ritu}
+        paragraphs={rituStory}
       />
 
       {/* =====================================
@@ -530,7 +568,6 @@ export default function OurTeam() {
           px-5 py-24 text-center
           md:px-10 lg:px-12 lg:py-36"
       >
-        {/* Subtle gradient */}
         <div
           aria-hidden="true"
           className="pointer-events-none
@@ -561,7 +598,7 @@ export default function OurTeam() {
               sm:text-5xl lg:text-7xl"
           >
             THE PEOPLE BEHIND
-            <span className="block text-[#000000]">THE EXPERIENCES.</span>
+            <span className="block text-black">THE EXPERIENCES.</span>
           </h2>
 
           <p

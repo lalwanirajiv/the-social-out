@@ -351,19 +351,19 @@ export default function ContactUs() {
             <div>
               <h3
                 className="mb-2 font-heading
-          text-2xl font-medium text-white
+          text-2xl font-medium text-[#9E1010]
           md:text-3xl"
               >
-                Email
+                EMAIL
               </h3>
 
               <a
-                href="mailto:info@thesocialout.in"
+                href="mailto:contact@thesocialout.in"
                 className="font-body text-base
           text-white/70 transition-colors
           hover:text-[#9E1010] md:text-lg"
               >
-                info@thesocialout.in
+                contact@thesocialout.in
               </a>
             </div>
 
@@ -371,17 +371,17 @@ export default function ContactUs() {
             <div>
               <h3
                 className="mb-2 font-heading
-          text-2xl font-medium text-white
+          text-2xl font-medium text-[#9E1010]
           md:text-3xl"
               >
-                Location
+                LOCATION
               </h3>
 
               <p
                 className="font-body text-base
           text-white/70 md:text-lg"
               >
-                Ahmedabad, Gujarat
+               Ahmedabad, Mumbai, Indore, Delhi
               </p>
             </div>
           </div>

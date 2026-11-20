@@ -82,7 +82,7 @@ const cities: City[] = [
   {
     name: "Ahmedabad",
     slug: "ahmedabad",
-    chapter: "01",
+    chapter: "",
     location: "Gujarat",
     events: [
       {
@@ -102,7 +102,7 @@ const cities: City[] = [
   {
     name: "Indore",
     slug: "indore",
-    chapter: "02",
+    chapter: "",
     location: "Madhya Pradesh",
     events: [
       {
