@@ -1,0 +1,73 @@
+
+name: Deploy The Social Out to Hostinger
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: socialout-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static Next.js website
+        env:
+          NEXT_PUBLIC_WORDPRESS_URL: https://cms.thesocialout.in
+          NEXT_TELEMETRY_DISABLED: "1"
+        run: npm run build
+
+      - name: Verify static export
+        run: |
+          test -f out/index.html
+          test -f out/past-events/index.html
+          echo "Static build verified."
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy static files to Hostinger
+        env:
+          HOST: ${{ secrets.HOSTINGER_HOST }}
+          USER: ${{ secrets.HOSTINGER_USER }}
+          PORT: ${{ secrets.HOSTINGER_PORT }}
+          PATH_REMOTE: ${{ secrets.HOSTINGER_DEPLOY_PATH }}
+        run: |
+          rsync -avz \
+            --exclude='/cms/' \
+            --exclude='/.private/' \
+            --exclude='/.well-known/' \
+            --exclude='/.htaccess' \
+            -e "ssh -i ~/.ssh/id_ed25519 -p ${PORT} -o StrictHostKeyChecking=yes" \
+            out/ \
+            "${USER}@${HOST}:${PATH_REMOTE%/}/"
+
+      - name: Deployment completed
+        run: echo "The Social Out deployment finished successfully."
